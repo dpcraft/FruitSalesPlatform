@@ -1,0 +1,57 @@
+<?xml version="1.0"  encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fruitsalesplatform.mapper.UserMapper">
+    <resultMap id="userRM" type="com.fruitsalesplatform.entity.User">
+        <id property="userId" column="user_id"/>
+        <result property="password" column="password"/>
+        <result property="username" column="username"/>
+        <result property="name" column="name"/>
+        <result property="telphone" column="telphone"/>
+    </resultMap>
+    <select id="get" parameterType="string" resultMap="userRM">
+        select * from user where user_id = #{id}
+    </select>
+    <select id="find" parameterType="map" resultMap="userRM">
+        select  * from user
+        <where>
+            <if test="username != null">and username = #{username}</if>
+            <if test="password != null"> and password = #{password}</if>
+            <if test="name != null"> and name = #{name}</if>
+            <if test="telphone != null"> and telphone = #{telphone}</if>
+        </where>
+    </select>
+
+    <insert id="insert" parameterType="com.fruitsalesplatform.entity.User">
+        insert into user (user_id, username, password, name, telphone)
+        values
+        (
+        #{userId, jdbcType=VARCHAR},
+        #{username, jdbcType=VARCHAR},
+        #{password, jdbcType=VARCHAR},
+        #{name, jdbcType=VARCHAR},
+        #{telphone, jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.fruitsalesplatform.entity.User">
+        update user
+        <set>
+            <if test="password != null">password = #{password, jdbcType=VARCHAR},</if>
+            <if test="name != null">name = #{name, jdbcType=VARCHAR},</if>
+            <if test="telphone != null">telphone = #{telphone,jdbcType=VARCHAR}</if>
+        </set>
+        where user_id = #{userId}
+    </update>
+
+    <delete id="deleteById" parameterType="string">
+        delete from user where user_id=#{userId}
+    </delete>
+    <delete id="delete" parameterType="string">
+        delete from user where user_id in
+        <foreach collection="array" item="userId" open="(" close=")" separator=",">
+            #{userId}
+        </foreach>
+    </delete>
+</mapper>

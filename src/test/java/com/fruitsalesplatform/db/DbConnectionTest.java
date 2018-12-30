@@ -5,6 +5,8 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import static org.junit.Assert.*;
 
@@ -53,5 +55,10 @@ public class DbConnectionTest {
         User user = sqlSession.selectOne("com.fruitsalesplatform.mapper.UserMapper.findUserByName", "张三");
         System.out.println("取出的信息");
         System.out.println(user);
+    }
+    @Test
+    public void TestLog() {
+        Logger logger = LoggerFactory.getLogger("xxx");
+        logger.debug("________________________testLog");
     }
 }
