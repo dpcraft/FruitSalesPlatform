@@ -4,7 +4,11 @@
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 
 <configuration>
+    <settings>
+        <setting name="autoMappingBehavior" value="PARTIAL"/>
+    </settings>
     <typeAliases>
-        <package name="com.dpcraft.ssm.po"/>
+        <package name="com.fruitsalesplatform.entity"/>
     </typeAliases>
+
 </configuration>

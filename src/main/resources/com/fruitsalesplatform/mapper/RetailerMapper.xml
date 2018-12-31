@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fruitsalesplatform.mapper.RetailerMapper">
+    <select id="get" parameterType="String" resultType="Retailer">
+        select * from retailer where retailer_id = #{retailerId}
+    </select>
+    <sql id="query_retailer_where">
+        <if test="name != null">and name like #{name}</if>
+        <if test="address != null">and address like #{address}</if>
+        <if test="telphone != null">and telphone = #{telphone}</if>
+        <if test="createTime != null">
+            and create_time = DATE_FORMAT(#{createTime}, '%Y-%m-%d %H:%i:%s')
+        </if>
+        <if test="startTime != null">
+            <![CDATA[and create_time >= DATE_FORMAT(#{startTime},'%Y-%m-%d %H:%i:%s')]]>
+        </if>
+        <if test="endTime != null">
+            <![CDATA[and create_time <= DATE_FORMAT(#{endTime},'%Y-%m-%d %H:%i:%s')]]>
+        </if>
+    </sql>
+
+    <select id="find" parameterType="java.util.HashMap" resultType="retailer">
+        select * from retailer
+        <where>
+            <if test="name != null">and name like #{name}</if>
+            <if test="address != null">and address like #{address}</if>
+            <if test="telphone != null">and telphone = #{telphone}</if>
+            <if test="createTime != null">
+                and create_time = DATE_FORMAT(#{createTime}, '%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="startTime != null">
+                <![CDATA[and create_time >= DATE_FORMAT(#{startTime},'%Y-%m-%d %H:%i:%s')]]>
+            </if>
+            <if test="endTime != null">
+                <![CDATA[and create_time <= DATE_FORMAT(#{endTime},'%Y-%m-%d %H:%i:%s')]]>
+            </if>
+            <if test="startPage != null and pageSize != null">limit #{startPage}, #{PageSize}</if>
+        </where>
+    </select>
+
+    <select id="count" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+        select count(*) from retailer
+        <where>
+            <if test="name != null">and name like #{name}</if>
+            <if test="address != null">and address like #{address}</if>
+            <if test="telphone != null">and telphone = #{telphone}</if>
+            <if test="createTime != null">
+                and create_time = DATE_FORMAT(#{createTime}, '%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="startTime != null">
+                <![CDATA[and create_time >= DATE_FORMAT(#{startTime},'%Y-%m-%d %H:%i:%s')]]>
+            </if>
+            <if test="endTime != null">
+                <![CDATA[and create_time <= DATE_FORMAT(#{endTime},'%Y-%m-%d %H:%i:%s')]]>
+            </if>
+        </where>
+    </select>
+    <insert id="insert" parameterType="Retailer" >
+        insert into retailer (retailer_id, name, telphone, address, status, create_time)
+        values
+        (
+        #{retailerId,jdbcType=VARCHAR},
+        #{name,jdbcType=VARCHAR},
+        #{telphone,jdbcType=VARCHAR},
+        #{status,jdbcType=VARCHAR},
+        #{createTime,jdbcType=VARCHAR}
+        )
+    </insert>
+    <update id="update" parameterType="Retailer">
+        update retailer
+        <set>
+            <if test="retailerId != null">retailer_id = #{retailerId,jdbcType=VARCHAR}</if>
+            <if test="name != null">name = #{name,jdbcType=VARCHAR}</if>
+            <if test="telphone != null">telphone = #{telphone,jdbcType=VARCHAR}</if>
+            <if test="status != null">status = #{status,jdbcType=INT}</if>
+            <if test="createTime != null">create_Time = #{createTime,jdbcType=VARCHAR}</if>
+            where retailer_id = #{retailerId}
+        </set>
+    </update>
+    <delete id="deleteById" parameterType="String">
+        delete from retailer where retailer_id = #{retailerId}
+    </delete>
+    <delete id="delete" parameterType="String">
+        delete from user where retailer_id in
+        <foreach collection="array" item="retailerId" open="(" close=")" separator=",">
+        #{retailerId}
+        </foreach>
+    </delete>
+</mapper>
