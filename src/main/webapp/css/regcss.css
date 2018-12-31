@@ -25,3 +25,9 @@ body{
     left: 40px;
     top: 90px;
 }
+
+#img{
+    position: absolute;
+    left: 3px;
+    top: 150px;
+}
