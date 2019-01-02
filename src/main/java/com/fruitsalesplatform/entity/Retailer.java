@@ -60,4 +60,16 @@ public class Retailer {
     public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
+
+    @Override
+    public String toString() {
+        return "Retailer{" +
+                "retailerId='" + retailerId + '\'' +
+                ", name='" + name + '\'' +
+                ", telphone='" + telphone + '\'' +
+                ", address='" + address + '\'' +
+                ", status=" + status +
+                ", createTime='" + createTime + '\'' +
+                '}';
+    }
 }
