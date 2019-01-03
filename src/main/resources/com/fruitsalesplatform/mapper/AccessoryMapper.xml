@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fruitsalesplatform.mapper.AccessoryMapper">
+    <select id="find" parameterType="java.util.HashMap" resultType="Accessory">
+        select * from accessory
+        <where>
+            <if test="fruitId != null"> and fruit_id = #{fruitId}</if>
+        </where>
+    </select>
+
+    <delete id="deleteById" parameterType="string">
+        delete from accessory where accessory_id = #{accessoryId}
+    </delete>
+
+    <delete id="delete" parameterType="string">
+        delete from accessory where accessory_id in
+        <foreach collection="array" item="accessoryId" open="(" close=")" separator=",">
+            #{accessoryId}
+        </foreach>
+    </delete>
+    <select id="get" parameterType="string" resultType="Accessory">
+        select * from accessory where accessory_id = #(accessoryId)
+    </select>
+
+    <insert id="insert" parameterType="Accessory">
+		insert into accessory
+		(accessory_id,fruit_Id,name,price,create_time)
+		values
+		(	#{accessoryId,jdbcType=VARCHAR},
+		    #{fruitId,jdbcType=VARCHAR},
+			#{name,jdbcType=VARCHAR},
+			#{price,jdbcType=DOUBLE},
+			#{createTime,jdbcType=VARCHAR}
+		)
+	</insert>
+    
+    <update id="update" parameterType="Accessory">
+        update accessory
+        <set>
+            <if test="name != null">name = #{name}</if>
+            <if test="price != null">name = #{price}</if>
+        </set>
+        where accessory_id = #{AccessoryId}
+    </update>
+
+    <delete id="deleteByFruitId" parameterType="string">
+        delete from accessory where fruit_id = #{fruitId}
+    </delete>
+</mapper>

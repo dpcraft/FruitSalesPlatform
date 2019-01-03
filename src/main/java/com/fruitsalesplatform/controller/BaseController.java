@@ -22,4 +22,14 @@ public class BaseController {
         binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
 //        binder.addCustomFormatter(new DateFormatter("yyyy-MM-dd"));
     }
+
+    protected String checkStringIsEmpty(String param) {
+        return param == null ? null : (param.equals("") ? null: "%" + param + "%");
+    }
+    protected String trim(String str) {
+        if(str == null || str == ""){
+            return null;
+        }
+        return  str.trim();
+    }
 }
