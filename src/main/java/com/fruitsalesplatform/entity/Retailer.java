@@ -5,7 +5,7 @@ package com.fruitsalesplatform.entity;
  * @date 2018/12/31
  * @time 12:44
  */
-public class Retailer {
+public class Retailer  extends PageEntity{
     private String retailerId;
     private String name;
     private String telphone;

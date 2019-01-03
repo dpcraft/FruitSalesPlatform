@@ -34,12 +34,129 @@
             var status = document.getElementById("indexStatus").value;
             document.getElementById("status").value = status;
         }
+
+        function init() {
+            var countNumber = document.getElementById("countNumber").value;
+            var sumPage = document.getElementById("sumPageNumber").value;
+            var currentPage=document.getElementById("currentPage").value;
+            var info = "一共<span style='color: blue;'>" + countNumber + "</span>条数据， " +
+                    "共<span style='color:blue'>" + sumPage + "</span>页," +
+                    "当前第<span style='color:blue'>" + currentPage + "</span>页";
+            document.getElementById("pageInfo").innerHTML=info;
+        }
+
+        function toPrePage() {
+            var currentPageObject = document.getElementById("currentPage");
+            var currentPage = parseInt(currentPageObject.value);
+            if(currentPage == 1) {
+                alert("已经是第一页了");
+            }else{
+                currentPageObject.value = currentPage - 1;
+                var pageSize = parseInt(document.getElementById("pageSize").value);
+                var startPageObject = document.getElementById("startPage");
+                startPageObject.value = parseInt(startPageObject.value) - pageSize;
+                document.getElementById("listForm").submit();
+            }
+        }
+
+        function toNextPage() {
+            var currentPageObject = document.getElementById("currentPage");
+            var currentPage = parseInt(currentPageObject.value);
+            var sumPage = parseInt(document.getElementById("sumPageNumber").value);
+            if(currentPage >= sumPage) {
+                alert("啊~行啦行啦，我们是有底线的")
+            } else{
+                currentPageObject.value = currentPage + 1;
+                var pageSize = parseInt(document.getElementById("pageSize").value);
+                var startPageObject = document.getElementById("startPage");
+                startPageObject.value = parseInt(startPageObject.value) + pageSize;
+                document.getElementById("listForm").submit();
+            }
+
+        }
+
+        function toLocationPage() {
+            var pageNumber = document.getElementById("pageNumber").value;
+            var currentPageObject = document.getElementById("currentPage");
+            var currentPge = currentPageObject.value;
+            if(pageNumber == null || pageNumber == "") {
+                alert("请输入要跳转的页数");
+            }else {
+                pageNumber = parseInt(pageNumber);
+                var sumPage = parseInt(document.getElementById("sumPageNumber").value);
+                if(pageNumber < 1) {
+                    alert("数据已经到顶了");
+                } else if(pageNumber > sumPage) {
+                    alert("数据已经到底了");
+                }else {
+                    currentPageObject.value = pageNumber;
+                    var pageSize = parseInt(document.getElementById("pageSize").value);
+                    var startPageObject = document.getElementById("startPage");
+                    // if(pageNumber > currentPge) {
+                    //     startPageObject.value = parseInt(startPageObject.value) + pageSize;
+                    // } else if(pageNumber < currentPge) {
+                    //     startPageObject.value = parseInt(startPageObject.value) - pageSize;
+                    // }
+                    startPageObject.value = (pageNumber - 1) * pageSize;
+                    document.getElementById("listForm").submit();
+                }
+            }
+
+        }
+
         function changeEditStatus(){
             var status = document.getElementById("eStatus").value;
             document.getElementById("editStatus").value=status;
         }
         function cancelEdit(){
             $(".mask").css("display","none");
+        }
+
+        function deleteRetailer(id, name) {
+            var r=confirm("确定要删除用户 " + name);
+            if (r==true)
+            {
+                $("#dRetailerId").val(id);
+                $("#dStartPage").val($("#startPage").val());
+                $("#dCurrentPage").val($("#currentPage").val());
+                $("#dPageSize").val($("#pageSize").val());
+                $("#deleteForm").submit();
+            }
+
+        }
+        function showAddMask(flag) {
+            if(flag == 'true') {
+                $(".addMask").css("display","block");
+            }else {
+                $(".addMask").css("display", "none");
+            }
+
+        }
+
+        function checkAddRetailer() {
+            if($("#addName").val() == null || $("#addName").val() == ""){
+                alert("用户名不能为空");
+                return false
+            }
+
+            if($("#addTelphone").val() == null || $("#addTelphone").val() == ""){
+                alert("手机号不能为空");
+                return false
+            }
+
+            var myreg = /^(1(3|5|8)[0-9]{1})\d{8}$/;
+            if(!myreg.test($("#addTelphone").val())){
+                alert("请输入有效的手机号码");
+                return false;
+            }
+
+            if($("#addAddress").val() == null || $("#addAddress").val() == ""){
+                alert("地址不能为空");
+                return false
+            }
+            return true;
+
+
         }
 
         function editRetailer(id) {
@@ -60,15 +177,15 @@
                     $("#editStatus").val(data["status"]);
                     $("#eStatus").val(data["status"]);
                     $(".mask").css("display", "block");
-                    // $("#eStartPage").val($("#startPage").val());
-                    // $("#eCurrentPage").val($("#currentPage").val());
-                    // $("#ePageSize").val($("#pageSize").val());
+                    $("#eStartPage").val($("#startPage").val());
+                    $("#eCurrentPage").val($("#currentPage").val());
+                    $("#ePageSize").val($("#pageSize").val());
                 }
             })
         }
     </script>
 </head>
-<body>
+<body onload="init()">
 <%@include file="../menu.jsp"%><br>
 <div class="mask">
     <div class="c">
@@ -89,7 +206,23 @@
         </form>
 </div>
 </div>
-<form action="list.action" method="post">
+
+<div class="addMask">
+    <div class="c">
+        <div style="background-color: #173e65; height: 20px; color: #fff;font-size: 12px;padding-left: 7px;">
+            添加信息
+            <span style="float: right; pading-right:10px;" onclick="showAddMask('false')">x</span>
+        </div>
+        <form id="addForm" action="add.action" method="post" onsubmit="checkAddRetailer()">
+            姓名：<input type="text" id="addName" name="name" style="width:120px"/><br/>
+            手机：<input type="text" id="addTelphone" name="telphone" style="width:120px"/><br/>
+            地址：<input type="text" id="addAddress" name="address" style="width:120px"/><br/>
+            <input type="hidden" name="status" value="1">
+            <input type="submit" value="添加" style="background-color: #173e65; color:#ffffff; width:70px;">
+        </form>
+    </div>
+</div>
+<form action="list.action" method="post" id="listForm">
     姓名：<input type="text" name="name" style="width:120px"/>
     手机：<input type="text" name="telphone" style="width:120px"/>
     地址：<input type="text" name="address" style="width:120px"/>
@@ -104,9 +237,15 @@
     <c:if test="${errorMsg}">
         <span style="color:red">${errorMsg}</span>
     </c:if>
+    <input type="hidden" name="startPage" id="startPage" value="${startPage}"/>
+    <input type="hidden" name="currentPage" id="currentPage" value="${currentPage}"/>
+    <input type="hidden" name="pageSize" id="pageSize" value="${pageSize}"/>
+    <input type="hidden" name="sumPageNumber" id="sumPageNumber" value="${sumPageNumber}"/>
+    <input type="hidden" name="countNumber" id="countNumber" aria-invalid="countNumber" value="${countNumber}"/>
 </form>
 
     <hr style="margin-top: 10px"/>
+    <button onclick="showAddMask('true')" style="background-color: #173e65; color: #ffffff; width: 70px;">添加</button>
     <c:if test="${list != null}">
         <table style="margin-top:10px; width:700px; text-align: center;" border="1">
             <tr>
@@ -128,7 +267,15 @@
                         </c:if>
                     </td>
                     <td>${item.createTime}</td>
-                    <td><a onclick="editRetailer('${item.retailerId}')">编辑</a>|<a>删除</a></td>
+                    <td><a onclick="editRetailer('${item.retailerId}')">编辑</a>|
+                        <a onclick="deleteRetailer('${item.retailerId}' , '${item.name}')">删除</a>
+                        <form id="deleteForm" action="delete.action" method="post">
+                            <input type="hidden" name="retailerId" id="dRetailerId"/>
+                            <input type="hidden" name="startPage" id="dStartPage"/>
+                            <input type="hidden" name="currentPage" id="dCurrentPage"/>
+                            <input type="hidden" name="pageSize" id="dPageSize"/>
+                        </form>
+                    </td>
                 </tr>
             </f:forEach>
         </table>
@@ -136,9 +283,10 @@
         <c:if test="${list == null}">
             <b>搜索结果为空</b>
         </c:if>
-        </di style="margin-top: 10px">
-            <a>上一页</a><a>下一页</a>
-            <input type="text" id="pageNumber" style="width:50px"><button>go</button>
+        <div style="margin-top: 10px">
+            <a onclick="toPrePage()">上一页</a><a onclick="toNextPage()">下一页</a>
+            <input type="text" id="pageNumber" style="width:50px"><button onclick="toLocationPage()">go</button>
+            <div id="pageInfo"></div>
         </div>
     </c:if>
 

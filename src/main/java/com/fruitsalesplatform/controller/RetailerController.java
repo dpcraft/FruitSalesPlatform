@@ -11,9 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @author dpcraft
@@ -35,9 +34,14 @@ public class RetailerController extends BaseController {
             map.put("endTime",endTime);
         }
         List<Retailer> retailerList = retailerService.find(map);
-        for(Retailer r: retailerList) {
-            LoggerFactory.getLogger("").debug(r.toString());
-        }
+        model.addAttribute("currentPage", retailer.getCurrentPage());
+        model.addAttribute("startPage", retailer.getStartPage());
+        int countNumber = retailerService.count(map);
+        model.addAttribute("countNumber",countNumber);
+        int pageSize = retailer.getPageSize();
+        model.addAttribute("pageSize",pageSize);
+        int sumPageNumber = countNumber % pageSize == 0 ? (countNumber/pageSize) : ((countNumber/pageSize) + 1);
+        model.addAttribute("sumPageNumber", sumPageNumber);
         model.addAttribute("list", retailerList);
         return "/retailer/retailerHome.jsp";
     }
@@ -49,10 +53,37 @@ public class RetailerController extends BaseController {
         return retailerService.get(id);
     }
     @RequestMapping("/edit.action")
-    public void edit(Model model, Retailer retailer) {
+    public String edit(Model model, Retailer retailer) {
         retailerService.update(retailer);
+        Retailer queryRetailer = new Retailer();
+        queryRetailer.setStartPage(retailer.getStartPage());
+        queryRetailer.setCurrentPage(retailer.getCurrentPage());
+        queryRetailer.setPageSize(retailer.getPageSize());
+        queryRetailer.setStatus(-1);
+        return list(model, queryRetailer, null, null);
     }
 
+    @RequestMapping("delete.action")
+    public String delete(Model model, Retailer retailer) {
+        retailerService.deleteById(retailer.getRetailerId());
+        Retailer queryRetailer = new Retailer();
+        queryRetailer.setStartPage(retailer.getStartPage());
+        queryRetailer.setCurrentPage(retailer.getCurrentPage());
+        queryRetailer.setPageSize(retailer.getPageSize());
+        queryRetailer.setStatus(-1);
+        return list(model,queryRetailer,null, null);
+    }
+
+
+    @RequestMapping("/add.action")
+    public String add(Model model, Retailer retailer) {
+        retailer.setRetailerId(UUID.randomUUID().toString());
+        retailer.setCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        retailerService.insert(retailer);
+        Retailer queryRetailer = new Retailer();
+        queryRetailer.setStatus(-1);
+        return list(model, queryRetailer, null, null);
+    }
     private Map<String, Object> retailerToMap(Retailer retailer) {
         Map<String, Object> map = new HashMap<>();
         map.put("name",checkStringIsEmpty(retailer.getName()));
@@ -60,6 +91,8 @@ public class RetailerController extends BaseController {
         map.put("address", checkStringIsEmpty(retailer.getAddress()));
         map.put("status", retailer.getStatus() == -1 ? null:retailer.getStatus());
         map.put("createTime", checkStringIsEmpty(retailer.getCreateTime()));
+        map.put("startPage", retailer.getStartPage());
+        map.put("pageSize", retailer.getPageSize());
         return map;
     }
     private String checkStringIsEmpty(String param) {

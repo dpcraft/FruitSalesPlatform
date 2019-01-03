@@ -37,23 +37,14 @@
         <where>
             <include refid="query_retailer_where"></include><!-- sql片段引入 -->
         </where>
+        <if test="startPage != null and pageSize != null"> LIMIT #{startPage},#{pageSize}</if>
+
     </select>
 
     <select id="count" parameterType="java.util.HashMap" resultType="java.lang.Integer">
         select count(*) from retailer
         <where>
-            <if test="name != null">and name like #{name}</if>
-            <if test="address != null">and address like #{address}</if>
-            <if test="telphone != null">and telphone = #{telphone}</if>
-            <if test="createTime != null">
-                and create_time = DATE_FORMAT(#{createTime}, '%Y-%m-%d %H:%i:%s')
-            </if>
-            <if test="startTime != null">
-                <![CDATA[and create_time >= DATE_FORMAT(#{startTime},'%Y-%m-%d %H:%i:%s')]]>
-            </if>
-            <if test="endTime != null">
-                <![CDATA[and create_time <= DATE_FORMAT(#{endTime},'%Y-%m-%d %H:%i:%s')]]>
-            </if>
+            <include refid="query_retailer_where"></include><!-- sql片段引入 -->
         </where>
     </select>
     <insert id="insert" parameterType="Retailer" >
@@ -63,6 +54,7 @@
         #{retailerId,jdbcType=VARCHAR},
         #{name,jdbcType=VARCHAR},
         #{telphone,jdbcType=VARCHAR},
+        #{address,jdbcType=VARCHAR},
         #{status,jdbcType=VARCHAR},
         #{createTime,jdbcType=VARCHAR}
         )
