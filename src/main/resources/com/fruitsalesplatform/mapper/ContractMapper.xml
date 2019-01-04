@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fruitsalesplatform.mapper.ContractMapper">
+    <sql id="query_contract_where">
+        <if test="barCode != null"> and t.bar_code = #{barCode}</if>
+        <if test="type != null"> and t.type like #{type}</if>
+        <if test="startTime != null"><![CDATA[and t.create_time >= to_date(#{startTime}, 'yyyy-MM-dd HH:mm:ss')]]></if>
+        <if test="endTime != null"><![CDATA[and t.create_time <= to_date(#{endTime}, 'yyyy-MM-dd HH:mm:ss')]]></if>
+    </sql>
+
+    <select id="findContractList" parameterType="java.util.HashMap" resultType="ContractVo">
+        select t.contract_id, t.bar_code, t.create_time,t.type, r.name as retailer_name
+        from contract t left join retailer r on t.retailer_id = r.retailer_id
+        <where>
+            <include refid="query_contract_where"></include>
+            <if test="retailerName != null">and r.name like #{retailerName}</if>
+        </where>
+        <if test="startPage != null and pageSize != null"> LIMIT #{startPage}, #{pageSize}</if>
+    </select>
+
+    <select id="count" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+        select count(*) from contract t
+        <where>
+            <include refid="query_contract_where"></include>
+        </where>
+    </select>
+
+    <resultMap id="ContractRM" type="Contract">
+        <id property="contractId" column="contract_id" jdbcType="VARCHAR"/>
+        <result property="barCode" column="bar_code" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time"/>
+        <association property="retailer" javaType="Retailer">
+            <id property="retailerId" column="retailer_id" jdbcType="VARCHAR"/>
+            <result property="name" column="retailer_name"/>
+            <result property="telphone" column="telphone"/>
+            <result property="address" column="address"/>
+        </association>
+        <collection property="commoditiesList" ofType="CommoditiesVo">
+            <id property="fruitId" column="fruit_id" jdbcType="VARCHAR"/>
+            <result property="name" column="fruit_name"/>
+            <result property="price" column="price" jdbcType="DOUBLE"/>
+            <result property="number" column="number"/>
+            <collection property="accessoryList" ofType="Accessory">
+                <result property="name" column="accessory_name"/>
+                <result property="price" column="accessory_price" jdbcType="DOUBLE"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="get" parameterType="string" resultMap="ContractRM">
+        select t.contract_id, t.bar_code, t.create_time, t.type,
+        r.retailer_id, r.name as retailer_name, r.telphone, r.address,
+        mdl.fruit_id, mdl.fruit_name,mdl.price,mdl.locality, mdl.number, mdl.accessory_name,
+        mdl.accessory_price
+        from (
+        select c.fruit_id, c.name as fruit_name, c.price, c.locality, m.number,
+        a.name as necessory_name, a.price as accessory_price
+        from middle_tab m left join commodities c on m.fruit_id = c.fruit_id
+        left join acessory a on a.fruit_id = m.fruit_id
+        where m.contract_id = #{contractId}
+        ) mdl, contract t left join retailer r on t.retailer_id = r.retailer_id
+        where t.contract_id = #{contractId}
+    </select>
+
+    <insert id="insert" parameterType="Contract">
+        insert into contract (contract_id, retailer_id, bar_code, type, create_time)
+        values(
+        #{contractId,jdbcType=VARCHAR},
+        #{retailer.retailerId,jdbcType=VARCHAR},
+        #{barCode,jdbcType=VARCHAR},
+        #{type,jdbcType=INTEGER},
+        #{createTime,jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <insert id="insertMiddleTab" parameterType="MiddleTab">
+        insert into middle_tab
+        (middle_id, contract_id, fruit_id, number)
+        values
+        (
+        #{middleId,jdbcType=VARCHAR},
+        #{contractId,jdbcType=VARCHAR},
+        #{fruitId,jdbcType=VARCHAR},
+        #{number,jdbcType=INTEGER}
+        )
+    </insert>
+
+    <select id="getMaxBarCode" resultType="java.lang.String">
+        select MAX(bar_code) from contract
+    </select>
+
+    <select id="update" parameterType="Contract">
+        update contract
+        <set>
+            <if test="retailerId != null">retailer_id = #{retailerId},</if>
+            <if test="type != null">type = #{type}</if>
+        </set>
+        where contract_id = #{contractId}
+    </select>
+
+    <delete id="deleMiddleTab" parameterType="string">
+        delete from middle_tab
+        where contract_id = #{contractId}
+    </delete>
+
+    <delete id="deleteById" parameterType="string">
+        delete from contract where contract_id=#{contractId}
+    </delete>
+
+
+</mapper>
