@@ -109,6 +109,12 @@
 
        }
 
+       function getContractDetail(id) {
+           var url="${pageContext.request.contextPath}/contract/getContractDetail.action?contractId=" + id;
+           window.open(url,"合同详情", "height=700,scrollbar=yes");
+
+       }
+
 
 
     </script>

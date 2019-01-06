@@ -121,6 +121,27 @@ public class ContractController extends BaseController {
         return "/contract/addContract.jsp";
 
     }
+
+
+    @RequestMapping("/getContractDetail.action")
+    public String getContractDetail(Model model, String contractId){
+        Contract contract = contractService.get(contractId);
+        model.addAttribute("contract",contract);
+        return "/contract/contractDetail.jsp";
+    }
+
+    @RequestMapping("/delete.action")
+    public String delete(Model model,ContractVo contractVo) {
+        contractService.deleteById(contractVo.getContractId());
+        ContractVo queryContract = new ContractVo();
+        queryContract.setType(-1);
+        queryContract.setStartPage(contractVo.getStartPage());
+        queryContract.setCurrentPage(contractVo.getCurrentPage());
+        queryContract.setPageSize(contractVo.getPageSize());
+        return list(model, queryContract, null, null);
+    }
+
+
     private Map<String,Object> contractToMap(ContractVo contractVo) {
         Map<String,Object> map = new HashMap<>();
         map.put("barCode", checkStringIsEmpty(contractVo.getBarCode()));

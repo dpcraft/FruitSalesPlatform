@@ -43,6 +43,7 @@
             <result property="name" column="fruit_name"/>
             <result property="price" column="price" jdbcType="DOUBLE"/>
             <result property="number" column="number"/>
+            <result property="locality" column="locality"/>
             <collection property="accessoryList" ofType="Accessory">
                 <result property="name" column="accessory_name"/>
                 <result property="price" column="accessory_price" jdbcType="DOUBLE"/>
@@ -57,9 +58,9 @@
         mdl.accessory_price
         from (
         select c.fruit_id, c.name as fruit_name, c.price, c.locality, m.number,
-        a.name as necessory_name, a.price as accessory_price
+        a.name as accessory_name, a.price as accessory_price
         from middle_tab m left join commodities c on m.fruit_id = c.fruit_id
-        left join acessory a on a.fruit_id = m.fruit_id
+        left join accessory a on a.fruit_id = m.fruit_id
         where m.contract_id = #{contractId}
         ) mdl, contract t left join retailer r on t.retailer_id = r.retailer_id
         where t.contract_id = #{contractId}

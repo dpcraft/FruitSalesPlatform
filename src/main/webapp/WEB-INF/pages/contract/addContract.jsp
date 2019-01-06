@@ -233,10 +233,10 @@
 <form id="addContractForm" action="add.action" method="post" onsubmit="checkAddContract()">
     合同编码：<input type="text" name="barcode" style="width:120px;" value="系统自动生成" readonly="readonly"/><br/>
     类型：<select id="indexType" onchange="changeType()">
-    <option value="1">省外</option>
-    <option value="1">省内</option>
+    <option value="1" selected="selected">省外</option>
+    <option value="0">省内</option>
 </select>
-    <input type="hidden" name="type" value="0"/><br/>
+    <input type="hidden" name="type" id="type" value="1"/><br/>
     <div class="info">
         零售商信息：
         <div class="btn btn-div" onclick="addRetailer(null)" style="float: right;">关联</div><br/>
