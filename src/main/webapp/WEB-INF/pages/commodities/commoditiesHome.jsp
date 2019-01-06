@@ -207,9 +207,9 @@
     名称：<input type="text" name="name" style="width:120px" value="${commodities.name}"/>
     产地：<input type="text" name="locality" style="width:120px" value="${commodities.locality}"/>
     价格：<input type="text" id="price1" name="startPrice" type="number" min="0.0" step="0.1" value="${startPrice}"/>
-    -<input type="text" id="price2" name="endPrice" type="number" min="0.0" step="0.1" value="${endPrice}"/><br/>
+    - <input type="text" id="price2" name="endPrice" type="number" min="0.0" step="0.1" value="${endPrice}"/><br/>
     创建日期：<input type="datetime-local" name="startTime" value="${startTime}"/>
-    -<input type="datetime-local" name="endTime" value="${endTime}"/>
+    - <input type="datetime-local" name="endTime" value="${endTime}"/>
     <input type="submit" value="搜索" style="background-color: #173e65; color: #ffffff; width: 70px;"/><br/>
     <c:if test="${errorMsg}">
         <span style="color: red;">${errorMsg}</span>

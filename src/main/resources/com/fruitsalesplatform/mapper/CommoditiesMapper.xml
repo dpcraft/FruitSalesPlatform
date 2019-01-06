@@ -13,8 +13,8 @@
         <if test="endPrice != null"> <![CDATA[ and price <= #{endPrice}]]></if>
         <if test="locality != null">and locality like #{locality}</if>
         <if test="createTime != null"> and create_time = DATE_FORMAT(#{createTime}, '%Y-%m-%d %H:%i:%s')</if>
-        <if test="startTime != null"> <![CDATA[AND create_time >= DATE_FORMAT(#(startTime), '%Y-%m-%d %H:%i:%s')]]></if>
-        <if test="endTime != null"> <![CDATA[AND create_time <= DATE_FORMAT(#(endTime), '%Y-%m-%d %H:%i:%s')]]></if>
+        <if test="startTime != null"> <![CDATA[AND create_time >= DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s')]]></if>
+        <if test="endTime != null"> <![CDATA[AND create_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s')]]></if>
     </sql>
 
     <select id="find" parameterType="java.util.HashMap" resultType="Commodities">

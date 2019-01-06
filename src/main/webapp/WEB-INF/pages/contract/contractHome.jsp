@@ -131,7 +131,7 @@
     </select>
     <input type="hidden" name="type" id="type" value="-1"><br/>
     创建日期<input type="datetime-local" name="startTime" value="${startTime}"/>
-    -<input type="datetime-local" name="startTime" value="${endTime}"/>
+    - <input type="datetime-local" name="endTime" value="${endTime}"/>
     <input type="submit" value="搜索" style="background-color: #173e65;color: #ffffff; width: 70px;">
     <c:if test = "${errorMsg}">
         <span style="color: red">${errorMsg}</span>

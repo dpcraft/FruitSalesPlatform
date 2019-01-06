@@ -34,6 +34,7 @@ public class RetailerController extends BaseController {
             map.put("endTime",endTime);
         }
         List<Retailer> retailerList = retailerService.find(map);
+        model.addAttribute("retailer", retailer);
         model.addAttribute("currentPage", retailer.getCurrentPage());
         model.addAttribute("startPage", retailer.getStartPage());
         int countNumber = retailerService.count(map);

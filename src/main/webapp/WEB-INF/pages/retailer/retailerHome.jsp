@@ -36,6 +36,8 @@
         }
 
         function init() {
+            $("#indexStatus").val(${retailer.status});
+            // $("#indexStatus").val(document.getElementById("status").value);
             var countNumber = document.getElementById("countNumber").value;
             var sumPage = document.getElementById("sumPageNumber").value;
             var currentPage=document.getElementById("currentPage").value;
@@ -183,6 +185,8 @@
                 }
             })
         }
+
+
     </script>
 </head>
 <body onload="init()">
@@ -192,7 +196,7 @@
         <div style="background-color: #173e65; height: 20px; color: #fff; font-size: 12px; padding-left: 7px;">
             修改信息<span style="float: right; padding-right: 10px;" onclick="cancelEdit()">x</span>
         </div>
-        <form id="editForm" action="edit.action" method="post">
+        <form id="editForm" action="edit.action" method="post" >
             姓名:<input type="text" id="editName" name="name" style="width:120px"/><br>
             手机:<input type="text" id="editTelphone" name="telphone" style="width:120px"/><br>
             地址:<input type="text" id="editAddress" name="address" style="width:120px"/><br/>
@@ -223,15 +227,15 @@
     </div>
 </div>
 <form action="list.action" method="post" id="listForm">
-    姓名：<input type="text" name="name" style="width:120px"/>
-    手机：<input type="text" name="telphone" style="width:120px"/>
-    地址：<input type="text" name="address" style="width:120px"/>
-    状态：<select id="indexStatus" onchange="changeStatus()">
-    <option value="-1" selected="selected">全部</option>
-    <option value="1">启用</option>
-    <option value="0">停用</option>
+    姓名：<input type="text" name="name" value="${retailer.name}" style="width:120px"/>
+    手机：<input type="text" name="telphone" value="${retailer.telphone}" style="width:120px"/>
+    地址：<input type="text" name="address" value="${retailer.address}" style="width:120px"/>
+    状态：<select id="indexStatus" onchange="changeStatus()" >
+    <option value="-1" >全部</option>
+    <option value="1" >启用</option>
+    <option value="0" >停用</option>
     </select>
-    <input type="hidden" name="status" id="status" value="-1">
+    <input type="hidden" name="status" id="status" value="${retailer.status == null ? -1: retailer.status}">
     创建日期<input type="text" name="createTime"/>
     <input type="submit" value="搜索" style="background-color: #173e65;color: #ffffff;width: 70px;"/><br/>
     <c:if test="${errorMsg}">

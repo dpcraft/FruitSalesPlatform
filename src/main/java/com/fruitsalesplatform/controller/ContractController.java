@@ -10,6 +10,7 @@ import com.fruitsalesplatform.service.CommoditiesService;
 import com.fruitsalesplatform.service.ContractService;
 import com.fruitsalesplatform.service.RetailerService;
 import com.mysql.jdbc.StringUtils;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,11 +41,14 @@ public class ContractController extends BaseController {
     @RequestMapping("/list.action")
     public String list(Model model, ContractVo contractVo,String startTime, String endTime) {
         Map<String,Object> map = this.contractToMap(contractVo);
+        LoggerFactory.getLogger("").debug("############## startTime: " + startTime +"##############");
         if(startTime != null && startTime != "") {
             map.put("startTime",startTime);
+            model.addAttribute("startTime",startTime);
         }
         if(endTime != null && endTime != "") {
             map.put("endTime", endTime);
+            model.addAttribute("endTime",endTime);
         }
         List<ContractVo> contractList = contractService.findContractList(map);
         model.addAttribute("list", contractList.size() < 1 ? null : contractList);

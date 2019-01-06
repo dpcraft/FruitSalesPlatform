@@ -6,8 +6,8 @@
     <sql id="query_contract_where">
         <if test="barCode != null"> and t.bar_code = #{barCode}</if>
         <if test="type != null"> and t.type like #{type}</if>
-        <if test="startTime != null"><![CDATA[and t.create_time >= to_date(#{startTime}, 'yyyy-MM-dd HH:mm:ss')]]></if>
-        <if test="endTime != null"><![CDATA[and t.create_time <= to_date(#{endTime}, 'yyyy-MM-dd HH:mm:ss')]]></if>
+        <if test="startTime != null"><![CDATA[and t.create_time >= DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s')]]></if>
+        <if test="endTime != null"><![CDATA[and t.create_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s')]]></if>
     </sql>
 
     <select id="findContractList" parameterType="java.util.HashMap" resultType="ContractVo">
